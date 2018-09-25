@@ -55,3 +55,76 @@
 ;  (c)
 ; > (x #'list 1 nil)
 ;   (1)
+; a:	apply
+
+;; 7.只使用本章所介绍的操作符，定义一个函数，它接受一个列表作为实参，如果有一个元素是列表时，就返回真。
+; a:
+(defun youlist-R (lst)
+  "递归判断列表lst中有没有列表，若lst不是列表则返回nil"
+  (and (listp lst)
+       (not (null lst))
+       (if (listp (car lst))
+	 T
+	 (youlist-R (cdr lst)))))
+(defun youlist-I (lst)
+  "迭代判断列表lst中有没有列表，若lst不是列表则返回nil"
+  (and (listp lst)
+       (let ((ret nil))
+	 (dolist (obj lst)
+	   (setf ret (or ret (listp obj))))
+	 ret)))
+
+;; 8.给出函数的迭代与递归版本：
+;  a.接受一个正整数，并打印出数字数量的点。
+; a:
+(defun point-I (num)
+  (do ((i num (/ i 10)))
+    ((< i 1) t)
+    (format t ".")))
+(defun point-R (num)
+  (if (< num 1)
+    t
+    (progn
+      (format t ".")
+      (point-R (/ num 10)))))
+;  b.接受一个列表，并返回 a 在列表里所出现的次数。
+; a:
+(defun acnt-I (lst)
+  (if (listp lst)
+    (let ((ret 0))
+      (dolist (obj lst)
+	(if (eql obj 'a)
+	  (setf ret (+ ret 1))))
+      ret)
+    nil))
+(defun acnt-R (lst)
+  (if (not (listp lst))
+    nil
+    (if (null lst)
+      0
+      (if (eql (car lst) 'a)
+	(+ 1 (acnt-R (cdr lst)))
+	(acnt-R (cdr lst))))))
+
+;; 9.一位朋友想写一个函数，返回列表里所有非 nil 元素的和。他写了此函数的两个版本，但两个都不能工作。请解释每一个的错误在哪里，并给出正确的版本。
+;  (a)
+(defun summit (lst)
+  (remove nil lst)
+  (apply #'+ lst))
+; a:	remove没有副作用
+(defun summit (lst)
+  (apply #'+ (remove nil lst)))
+;  (b)
+(defun summit (lst)
+  (let ((x (car lst)))
+    (if (null x)
+      (summit (cdr lst))
+      (+ x (summit (cdr lst))))))
+; a:	缺少回溯
+(defun summit (lst)
+  (if (null lst)
+    0
+    (let ((x (car lst)))
+      (if (null x)
+	(summit (cdr lst))
+	(+ x (summit (cdr lst)))))))
