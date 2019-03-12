@@ -83,3 +83,52 @@
   "返回以root为根节点的二叉搜索树中最大元素所在的节点"
   (and root
        (or (bst-max (node-r root)) root)))
+
+(defun bst-traverse (fn root order)
+  "用函数fn遍历以root为根节点的二叉搜索树，返回nil
+  遍历顺序由order指定，正数先根、0中根、负数后根"
+  (and (numberp order)
+       (when root
+	 (cond ((> order 0)
+		(funcall fn (node-elt root))
+		(bst-traverse fn (node-l root) order)
+		(bst-traverse fn (node-r root) order))
+	       ((< order 0)
+		(bst-traverse fn (node-l root) order)
+		(bst-traverse fn (node-r root) order)
+		(funcall fn (node-elt root)))
+	       (t
+		(bst-traverse fn (node-l root) order)
+		(funcall fn (node-elt root))
+		(bst-traverse fn (node-r root) order))))
+       nil))
+
+
+;; cond
+;;	疑似condition的简写
+;; 语法：
+;;	(cond ((条件1) (动作1-1) (动作1-2) ... (动作1-n1))
+;;	      ((条件2) (动作2-1) (动作2-2) ... (动作2-n2))
+;;		.
+;;		.
+;;		.
+;;	      ((条件m) (动作m-1) (动作m-2) ... (动作m-nm)))
+;; 功能：
+;;	依次判断条件1到条件m的真假，若直到条件i才是真，则：
+;;	依次执行动作i-1到动作i-ni，然后返回动作i-ni的返回值，ni=0时返回T。
+;;	若所有条件都是假(nil)或m=0，则所有动作都不执行，cond返回nil。
+
+;; when
+;; 语法：
+;;	(when (条件)
+;;		(动作1)
+;;		(动作2)
+;;		  .
+;;		  .
+;;		  .
+;;		(动作n))
+;; 功能：
+;;	若条件为假则返回nil。
+;;	否则依次执行动作1到动作n，
+;;	并返回动作n的返回值，
+;;	若没有动作则返回nil。
