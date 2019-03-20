@@ -108,6 +108,14 @@
 ;; 8.定义一个函数，接受一个列表并用点状表示法印出：
 ; > (showdots '(a b c))
 ;   (A . (B . (C . NIL)))
+; a:
+(defun showdots (lst)
+  (if (null lst)
+    (format t "~A" nil)
+    (progn
+      (format t "(~A . " (car lst))
+      (showdots (cdr lst))
+      (format t ")"))))
 
 
 ;; 9.写一个程序来找到 3.15 节里表示的网络中，最长有限的路径 (不重复)。网络可能包含循环。
