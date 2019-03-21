@@ -67,6 +67,7 @@
 (defun cons (a b)
   (append (list b) a))
 ;  (b) list
+; a:
 (defun list (&rest lst)
   (if (null lst)
     nil
@@ -79,6 +80,7 @@
     (+ 1
        (length (car lst)))))
 ;  (d) member (for lists; no keywords)
+; a:
 (defun member (obj lst)
   (if (null lst)
     nil
