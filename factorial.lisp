@@ -11,3 +11,13 @@
        (ret nil))
     ((> i b) ret)
     (setf ret (append ret (list i)))))
+
+(defun factorial (n)
+  "n的阶乘，若参数不合法则返回nil"
+  (and (integerp n)
+       (cond
+	 ((< n 0) nil)
+	 ((zerop n) 1)
+	 (t (do* ((j 1 (+ j 1))
+		 (f 1 (* f j)))
+	      ((= j n) f))))))
