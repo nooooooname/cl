@@ -210,3 +210,23 @@
 		  (return-from bfs new-path)
 		  new-path)))
 	  (cdr (assoc node net))))
+
+
+
+;; 附1：测试用例生成器：
+;  (第7题) pairdiff1 ：
+(defun cons-testcase ()
+  (let ((ret nil))
+    (dotimes (n (random 20) ret)
+      (let ((a (random 1000)))
+	(setf ret (append ret (list a)))
+	(if (oddp (random 10000))
+	  (setf ret (append ret (list (- a 1))))
+	  (setf ret (append ret (list (+ a 1)))))))))
+;  (第8题) maxmin ：
+(defun cons-testcase ()
+  (let ((data-list nil))
+    (dotimes (n (+ (random 100) 1))
+      (setf data-list
+	    (append data-list (list (random 10000)))))
+    (eval (append '(vector) data-list))))
