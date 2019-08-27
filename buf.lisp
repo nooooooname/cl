@@ -61,3 +61,10 @@
   "清空队列b"
   (setf (buf-start b) 0
 	(buf-end b) 0))
+
+(defun buf-flush (b strm)
+  "将缓冲区b中的内容全部输出到流strm中，
+  返回输出的元素个数"
+  (let ((cnt (buf-cnt b)))
+    (dotimes (i cnt cnt)
+      (princ (buf-pop-front b) strm))))
