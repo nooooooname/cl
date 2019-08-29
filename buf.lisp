@@ -3,10 +3,10 @@
   vec (start 0) (end 0) (size 0))
 
 (defun new-buf (len)
-  "创建一个环形队列，参数是队列长度"
+  "创建一个环形队列，参数是队列容量"
   (if (> len 0)
-    (make-buf :vec (make-array len)
-	      :size len)))
+    (make-buf :vec (make-array (+ len 1))
+	      :size (+ len 1))))
 
 (defun buf-isfull (b)
   "返回队列是(t)否(nil)已满"
