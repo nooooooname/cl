@@ -1,0 +1,48 @@
+(load "buf.lisp")
+(defun file-subst (old new ifile ofile)
+  "文件字符串替换，传入一个旧字符串、一个新字符串、一个输入文件和一个输出文件，
+  用新字符串替换输入文件的内容中所有旧字符串，再把替换后的内容写入输出文件中。
+  返回替换了几处，如果输出文件已存在则覆盖。"
+  (with-open-file (istrm ifile :direction :input)
+    (with-open-file (ostrm ofile :direction :output :if-exists :supersede)
+      (let* ((from-filep t)
+	     (rbuf (new-buf (length old)))
+	     (buf-index 0)
+	     (next (lambda ()
+		     (if from-filep
+		       (let ((res (read-char istrm nil :eof)))
+			 (if (eql res :eof)
+			   (buf-flush rbuf ostrm)
+			   (buf-push res rbuf))
+			 res)
+		       (let ((res (bref rbuf buf-index)))
+			 (incf buf-index)
+			 (setf from-filep (zerop (- (buf-cnt rbuf) buf-index)))
+			 res))))
+	     (pass (lambda ()
+		     (princ (buf-pop-front rbuf) ostrm)
+		     (setf from-filep (zerop (buf-cnt rbuf))
+			   buf-index 0)))
+	     (out-new (lambda ()
+			(princ new ostrm)
+			(buf-clear rbuf)
+			(setf from-filep t
+			      buf-index 0))))
+	(stream-subst old next pass out-new)))))
+
+(defun stream-subst (old next pass out-new)
+  (let ((match-cnt 0)
+	(matching-index 0)
+	(len (length old)))
+    (do ((c (funcall next) (funcall next)))
+      ((eql c :eof) match-cnt)
+      (if (char= c (char old matching-index))
+	(if (= matching-index (- len 1))
+	  (progn
+	    (funcall out-new)
+	    (setf matching-index 0)
+	    (incf match-cnt))
+	  (incf matching-index))
+	(progn
+	  (funcall pass)
+	  (setf matching-index 0))))))
