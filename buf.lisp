@@ -36,6 +36,17 @@
     (values (svref (buf-vec buf) (buf-start buf)) t)
     (values nil nil)))
 
+(defun buf-tail (buf)
+  "查询队尾元素，返回队尾元素和查询结果，
+  若队列不空则查询结果为t，第一个返回值有效，
+  若队列为空则查询结果为nil，第一个返回值无效"
+  (if (> (buf-cnt buf) 0)
+    (values (svref (buf-vec buf)
+		   (mod (- (buf-end buf) 1)
+			(buf-size buf)))
+	    t)
+    (values nil nil)))
+
 (defun buf-pop-front (buf)
   "出队队首元素，返回值同 buf-front "
   (multiple-value-bind (val res) (buf-front buf)
@@ -60,7 +71,8 @@
 (defun buf-clear (b)
   "清空队列b"
   (setf (buf-start b) 0
-	(buf-end b) 0))
+	(buf-end b) 0)
+  t)
 
 (defun buf-flush (b strm)
   "将缓冲区b中的内容全部输出到流strm中，
