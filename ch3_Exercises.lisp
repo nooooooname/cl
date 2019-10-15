@@ -113,9 +113,13 @@
 ; a:
 (defun showdots (lst)
   (if (null lst)
-    (format t "~A" nil)
-    (progn
-      (format t "(~A . " (car lst))
+    (princ nil)
+    (let ((e (car lst)))
+      (princ #\()
+      (if (listp e)
+	(showdots e)
+	(princ e))
+      (princ " . ")
       (showdots (cdr lst))
       (format t ")"))))
 
