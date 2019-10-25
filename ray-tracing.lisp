@@ -136,3 +136,18 @@
     (unit-vector (- (x c) (x pt))
 		 (- (y c) (y pt))
 		 (- (z c) (z pt)))))
+
+
+;;; 光线追踪测试函数
+(defun ray-test (&optional (res 1))
+  "创建38个球体，然后产生一张分辨率为100*res×100*res的图片sphere.pgm。"
+  (setf *world* nil)
+  (defsphere 0 -300 -1200 200 .8)
+  (defsphere -80 -150 -1200 200 .7)
+  (defsphere 70 -100 -1200 200 .9)
+  (do ((x -2 (1+ x)))
+    ((> x 2))
+    (do ((z 2 (1+ z)))
+      ((> z 7))
+      (defsphere (* x 200) 300 (* z -400) 40 .75)))
+  (tracer (make-pathname :name "spheres.pgm") res))
