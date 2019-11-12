@@ -6,7 +6,7 @@
   则在排序后的序列中a的位置比b靠前。"
   (if (null end)
     (setf end (length seq)))
-  (let ((i start) (j (- end 1)) (fd nil) (p (funcall key (elt seq start))))
+  (let ((i start) (j (- end 1)) (fd nil))
     (while (< i j)
 	   (if (funcall cmp (funcall key (elt seq j)) (funcall key (elt seq i)))
 	     (progn
